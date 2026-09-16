@@ -1,0 +1,54 @@
+.portfolio-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.portfolio-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.portfolio-table th,
+.portfolio-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.portfolio-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.portfolio-symbol-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-symbol-info strong {
+  color: #111827;
+}
+
+.portfolio-symbol-info span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.profit {
+  color: #ef4444; /* 상승/수익 빨간색 계열 */
+  font-weight: 600;
+}
+
+.loss {
+  color: #3b82f6; /* 하락/손실 파란색 계열 */
+  font-weight: 600;
+}
+
+.portfolio-loading,
+.portfolio-empty {
+  padding: 24px;
+  text-align: center;
+  color: #6b7280;
+}

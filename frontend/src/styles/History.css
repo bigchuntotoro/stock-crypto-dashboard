@@ -1,0 +1,268 @@
+/* ============================================================
+   History Page — Stylesheet
+   Dashboard.css와 동일한 디자인 토큰을 사용합니다.
+   ============================================================ */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+.history-page {
+  --bg: #0b0f14;
+  --surface: #12171f;
+  --surface-raised: #171d26;
+  --border: #232b36;
+  --text: #e7ecf2;
+  --text-dim: #8a96a5;
+  --text-faint: #5b6572;
+  --up: #f0463c; /* 국내 관행: 상승/매수 = 빨강 */
+  --down: #3e7bfa; /* 국내 관행: 하락/매도 = 파랑 */
+  --accent: #2dd4bf;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    "Pretendard",
+    -apple-system,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.history-page * {
+  box-sizing: border-box;
+}
+
+/* ---------------- 헤더 ---------------- */
+
+.history-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.history-page-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 6px;
+}
+
+.history-page-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.history-count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* ---------------- 필터 ---------------- */
+
+.history-filter-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.history-filter-title {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.history-filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-filter-button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.history-filter-button:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+.history-filter-button.active {
+  background: var(--surface-raised);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------------- 테이블 ---------------- */
+
+.history-table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.history-table thead th {
+  text-align: left;
+  padding: 12px 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+
+.history-table tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-date {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.history-type {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.history-type.buy {
+  color: var(--up);
+  background: rgba(240, 70, 60, 0.12);
+}
+
+.history-type.sell {
+  color: var(--down);
+  background: rgba(62, 123, 250, 0.12);
+}
+
+.history-market {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.history-market.etf {
+  color: var(--accent);
+  background: rgba(45, 212, 191, 0.12);
+}
+
+.history-market.crypto {
+  color: #f5a623;
+  background: rgba(245, 166, 35, 0.12);
+}
+
+.history-symbol-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.history-symbol-info strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.history-symbol-info span {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.history-number,
+.history-amount {
+  font-family: "IBM Plex Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-amount {
+  font-weight: 600;
+}
+
+.history-status {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.history-empty {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.history-empty-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.history-empty h3 {
+  font-size: 15px;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.history-empty p {
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 640px) {
+  .history-page {
+    padding: 24px 16px 48px;
+  }
+
+  .history-table thead th,
+  .history-table tbody td {
+    padding: 10px 14px;
+  }
+}
