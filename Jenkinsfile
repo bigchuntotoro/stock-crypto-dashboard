@@ -25,8 +25,8 @@ pipeline {
     }
 
     tools {
-        jdk 'Java21'
-        nodejs 'Node24'
+        jdk 'JDK21'
+        nodejs 'NodeJS24'
     }
 
     stages {
