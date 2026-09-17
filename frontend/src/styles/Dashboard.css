@@ -1,0 +1,638 @@
+/* ============================================================
+   Stock & Crypto Dashboard — Stylesheet
+   업로드된 5개 컴포넌트에 CSS가 전혀 없어 스타일이 깨져 있었습니다.
+   이 파일이 그 클래스들을 전부 커버합니다.
+   ============================================================ */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+.dashboard-page {
+  --bg: #0b0f14;
+  --surface: #12171f;
+  --surface-raised: #171d26;
+  --border: #232b36;
+  --text: #e7ecf2;
+  --text-dim: #8a96a5;
+  --text-faint: #5b6572;
+  --up: #f0463c; /* 국내 관행: 상승/매수 = 빨강 */
+  --down: #3e7bfa; /* 국내 관행: 하락/매도 = 파랑 */
+  --accent: #2dd4bf;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    "Pretendard",
+    -apple-system,
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-page * {
+  box-sizing: border-box;
+}
+
+.dashboard-page .num {
+  font-family: "IBM Plex Mono", "Pretendard", monospace;
+}
+
+/* ---------------- Header ---------------- */
+
+.app-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.app-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  outline-offset: 4px;
+}
+
+.app-logo-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.app-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.app-logo-title {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.app-logo-subtitle {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.app-navigation {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.app-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.app-nav-link:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.app-nav-link.active {
+  color: var(--text);
+  background: var(--surface-raised);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.app-nav-icon {
+  font-size: 14px;
+}
+
+.app-header-right {
+  margin-left: auto;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.connection-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18);
+}
+
+/* ---------------- Page layout ---------------- */
+
+.dashboard-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  width: 100%;
+  flex: 1;
+}
+
+.dashboard-title-section {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0 0 6px;
+}
+
+.dashboard-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.market-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-dim);
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.market-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--up);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.dashboard-section {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
+}
+
+.section-header h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+
+.section-header p {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.symbol-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.symbol-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.portfolio-card,
+.chart-card,
+.order-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.chart-card {
+  padding: 4px;
+  border-top: 2px solid var(--accent);
+}
+
+.order-card {
+  border-top: 2px solid var(--up);
+}
+
+.portfolio-card {
+  border-top: 2px solid var(--text-faint);
+}
+
+/* ---------------- Chart ---------------- */
+
+.chart-view {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ---------------- Portfolio ---------------- */
+
+.portfolio {
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-summary {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.portfolio-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 24px;
+  border-left: 1px solid var(--border);
+}
+
+.portfolio-summary-item:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.portfolio-summary-label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.portfolio-summary-value {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 19px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.portfolio-summary-value.profit {
+  color: var(--up);
+}
+
+.portfolio-summary-value.loss {
+  color: var(--down);
+}
+
+.portfolio-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-item {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr 1.1fr 1.1fr 1.3fr;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.portfolio-item:last-child {
+  border-bottom: none;
+}
+
+.portfolio-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.portfolio-item-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.portfolio-item-symbol {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.portfolio-item-type {
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.portfolio-item-type.etf {
+  color: var(--accent);
+  background: rgba(45, 212, 191, 0.12);
+}
+
+.portfolio-item-type.crypto {
+  color: #f5a623;
+  background: rgba(245, 166, 35, 0.12);
+}
+
+.portfolio-item-data {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+}
+
+.portfolio-item-label {
+  font-family: "Pretendard", sans-serif;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.portfolio-item-profit {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  text-align: right;
+}
+
+.portfolio-item-profit .profit {
+  color: var(--up);
+}
+
+.portfolio-item-profit .loss {
+  color: var(--down);
+}
+
+.portfolio-empty {
+  padding: 56px 24px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.portfolio-empty-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.portfolio-empty h3 {
+  font-size: 15px;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.portfolio-empty p {
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ---------------- Order form ---------------- */
+
+.order-form-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.order-form-top {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.order-form-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.order-type-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.type-btn {
+  padding: 10px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.type-btn.buy.active {
+  background: rgba(240, 70, 60, 0.12);
+  border-color: var(--up);
+  color: var(--up);
+}
+
+.type-btn.sell.active {
+  background: rgba(62, 123, 250, 0.12);
+  border-color: var(--down);
+  color: var(--down);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.form-group-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.use-market-price-btn {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.use-market-price-btn:hover {
+  text-decoration: underline;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+}
+
+.form-input:disabled {
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.order-form-bottom {
+  margin-top: auto;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.total-amount-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.total-amount-box strong {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.submit-btn {
+  padding: 13px 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #0b0f14;
+  transition: filter 0.15s ease;
+}
+
+.submit-btn:hover {
+  filter: brightness(1.08);
+}
+
+.submit-btn.buy-submit {
+  background: var(--up);
+}
+
+.submit-btn.sell-submit {
+  background: var(--down);
+}
+
+/* ---------------- Footer ---------------- */
+
+.dashboard-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.dashboard-footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------------- Responsive ---------------- */
+
+@media (max-width: 860px) {
+  .app-header-inner {
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .app-nav-link span:last-child {
+    display: none;
+  }
+
+  .dashboard-container {
+    padding: 24px 16px 48px;
+  }
+
+  .portfolio-summary {
+    padding: 16px;
+    gap: 16px 0;
+  }
+
+  .portfolio-summary-item {
+    flex: 1 1 40%;
+    padding: 0 16px;
+    margin-bottom: 4px;
+  }
+
+  .portfolio-item {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 10px;
+  }
+
+  .portfolio-item-info {
+    grid-column: 1 / -1;
+  }
+
+  .portfolio-item-profit {
+    text-align: left;
+  }
+}
