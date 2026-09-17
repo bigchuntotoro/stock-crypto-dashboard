@@ -3,7 +3,6 @@
    업로드된 5개 컴포넌트에 CSS가 전혀 없어 스타일이 깨져 있었습니다.
    이 파일이 그 클래스들을 전부 커버합니다.
    ============================================================ */
-
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
 
