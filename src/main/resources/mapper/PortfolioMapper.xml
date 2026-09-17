@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dashboard.mapper.PortfolioMapper">
+
+    <update id="decreaseCash">
+        UPDATE accounts SET cash = cash - #{amount} WHERE user_id = #{userId}
+    </update>
+
+    <update id="increaseCash">
+        UPDATE accounts SET cash = cash + #{amount} WHERE user_id = #{userId}
+    </update>
+
+    <update id="upsertAsset">
+        INSERT INTO portfolios (user_id, symbol, quantity)
+        VALUES (#{userId}, #{symbol}, #{quantity})
+        ON DUPLICATE KEY UPDATE quantity = quantity + #{quantity}
+    </update>
+
+    <update id="decreaseAsset">
+        UPDATE portfolios
+        SET quantity = quantity - #{quantity}
+        WHERE user_id = #{userId} AND symbol = #{symbol}
+    </update>
+
+    <!-- 포트폴리오 화면 조회를 위한 쿼리 추가 -->
+    <select id="selectPortfolioByUserId" resultType="com.example.dashboard.dto.PortfolioResponseDto">
+        SELECT
+        p.symbol,
+        o.name AS name,
+        p.quantity,
+        COALESCE(o.avg_price, 0) AS averagePrice,
+        0 AS currentPrice
+        FROM portfolios p
+        LEFT JOIN (
+        SELECT
+        symbol,
+        name,
+        SUM(CASE WHEN type = 'BUY' THEN price * quantity ELSE 0 END) /
+        NULLIF(SUM(CASE WHEN type = 'BUY' THEN quantity ELSE 0 END), 0) AS avg_price
+        FROM orders
+        WHERE user_id = #{userId}
+        GROUP BY symbol
+        ) o ON p.symbol = o.symbol
+        WHERE p.user_id = #{userId} AND p.quantity > 0
+    </select>
+
+</mapper>

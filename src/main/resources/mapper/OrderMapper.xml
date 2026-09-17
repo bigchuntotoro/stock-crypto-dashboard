@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dashboard.mapper.OrderMapper">
+    <!-- 매수 주문 저장 (name, market, status 포함) -->
+    <insert id="insertOrder" parameterType="com.example.dashboard.dto.OrderRequestDto">
+        INSERT INTO orders (user_id, symbol, name, market, type, quantity, price, status, created_at)
+        VALUES (#{userId}, #{symbol}, #{name}, #{market}, #{type}, #{quantity}, #{price}, COALESCE(#{status}, '체결'), NOW())
+    </insert>
+
+    <!-- DB에 저장된 거래 내역 조회 -->
+    <select id="selectOrderHistory" resultType="com.example.dashboard.dto.OrderResponseDto">
+        SELECT
+        order_id AS id,
+        created_at AS date,
+        type,
+        market,
+        name,
+        symbol,
+        quantity,
+        price,
+        (quantity * price) AS amount,
+        status
+        FROM orders
+        ORDER BY created_at DESC
+    </select>
+</mapper>

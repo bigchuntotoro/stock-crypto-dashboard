@@ -1,0 +1,24 @@
+server:
+  port: 8085
+
+spring:
+  datasource:
+    url: jdbc:mariadb://100.88.187.37:3306/reactdb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: totoro
+    password: totoro
+    driver-class-name: org.mariadb.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.example.dashboard.dto
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: INFO
+    # DEBUG 대신 TRACE로 변경하면 쿼리 결과(Row) 값이 출력됩니다.
+    com.example.dashboard.mapper: TRACE
+    org.apache.ibatis: DEBUG
+    java.sql.PreparedStatement: DEBUG
+    java.sql.ResultSet: DEBUG
