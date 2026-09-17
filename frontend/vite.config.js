@@ -7,7 +7,7 @@ export default defineConfig({
     global: "window", // global을 window 객체로 매핑
   },
   server: {
-    port: 3000,
+    port: 87,
     proxy: {
       "/api": {
         target: "http://localhost:8085",
