@@ -25,4 +25,9 @@
         FROM orders
         ORDER BY created_at DESC
     </select>
+
+    <!-- 주문 내역 삭제 SQL 추가 -->
+    <delete id="deleteOrder">
+        DELETE FROM orders WHERE order_id = #{id}
+    </delete>
 </mapper>

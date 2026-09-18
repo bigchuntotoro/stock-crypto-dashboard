@@ -29,4 +29,11 @@ public class OrderController {
         orderService.createOrder(requestDto);
         return ResponseEntity.ok().build();
     }
+
+    // 주문 내역 삭제 API 추가
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable("id") Long id) {
+        orderService.deleteOrder(id);
+        return ResponseEntity.ok().build();
+    }
 }

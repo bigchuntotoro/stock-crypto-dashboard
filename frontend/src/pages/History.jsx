@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import axios from "axios"; // API 통신용 (설정되어 있다면 사용)
+import axios from "axios";
 import Header from "../components/common/Header";
 import "../styles/History.css";
 
@@ -8,29 +8,42 @@ const History = () => {
   const [filter, setFilter] = useState("ALL");
   const [loading, setLoading] = useState(true);
 
-  // ============================================================
   // 백엔드 API로부터 DB 거래 내역 불러오기
-  // ============================================================
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        setLoading(true);
-        // 예시 API 엔드포인트 (백엔드 컨트롤러 경로에 맞게 수정하세요)
-        const response = await axios.get("/api/orders/history");
-        setHistory(response.data);
-      } catch (error) {
-        console.error("거래 내역을 불러오는 중 오류가 발생했습니다:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchHistory = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("/api/orders/history");
+      setHistory(response.data);
+    } catch (error) {
+      console.error("거래 내역을 불러오는 중 오류가 발생했습니다:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchHistory();
   }, []);
 
   // ============================================================
-  // 필터링
+  // 삭제 핸들러 추가
   // ============================================================
+  const handleDelete = async (id) => {
+    if (!window.confirm("해당 거래내역을 삭제하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/orders/${id}`);
+      // 삭제 성공 시 상태(state)를 갱신하여 화면에서 즉시 제거
+      setHistory((prev) => prev.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("거래내역 삭제 중 오류가 발생했습니다:", error);
+      alert("삭제에 실패했습니다.");
+    }
+  };
+
+  // 필터링
   const filteredHistory = useMemo(() => {
     if (filter === "ALL") return history;
     if (filter === "BUY") return history.filter((item) => item.type === "BUY");
@@ -43,9 +56,6 @@ const History = () => {
     return history;
   }, [history, filter]);
 
-  // ============================================================
-  // 금액 포맷
-  // ============================================================
   const formatNumber = (value) => {
     return new Intl.NumberFormat("ko-KR").format(
       Math.round(Number(value) || 0),
@@ -76,8 +86,6 @@ const History = () => {
           <div className="history-count">총 {filteredHistory.length}건</div>
         </section>
 
-        {/* 필터 영역 생략 (기존 코드와 동일) */}
-
         <section className="history-table-card">
           <div className="history-table-wrapper">
             {loading ? (
@@ -102,6 +110,7 @@ const History = () => {
                     <th>체결가격</th>
                     <th>거래금액</th>
                     <th>상태</th>
+                    <th>관리</th> {/* 관리 헤더 추가 */}
                   </tr>
                 </thead>
                 <tbody>
@@ -138,6 +147,23 @@ const History = () => {
                         <span className="history-status">
                           {item.status || "체결"}
                         </span>
+                      </td>
+                      <td>
+                        {/* 삭제 버튼 추가 */}
+                        <button
+                          className="history-delete-btn"
+                          onClick={() => handleDelete(item.id)}
+                          style={{
+                            padding: "6px 12px",
+                            backgroundColor: "#ff4d4f",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          삭제
+                        </button>
                       </td>
                     </tr>
                   ))}

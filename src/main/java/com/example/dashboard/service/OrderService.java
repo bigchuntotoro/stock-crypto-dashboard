@@ -43,4 +43,10 @@ public class OrderService {
     public List<OrderResponseDto> getOrderHistory() {
         return orderMapper.selectOrderHistory();
     }
+
+    // 주문 내역 삭제 메서드 추가
+    @Transactional
+    public void deleteOrder(Long id) {
+        orderMapper.deleteOrder(id);
+    }
 }
