@@ -87,17 +87,20 @@ const TRADABLE_INSTRUMENTS = [
 ];
 
 // =========================================================
-// 사용자 계정 및 잔고 관리 서브 컴포넌트
+// 사용자 계정 및 잔고 관리 서브 컴포넌트 (자릿수 콤마 적용)
 // =========================================================
 const AccountManager = ({ userId = 1, onCashUpdated }) => {
-  const [cash, setCash] = useState("");
+  const [cashInput, setCashInput] = useState(""); // 화면에 콤마가 포함되어 표시될 문자열 값
+  const [rawCash, setRawCash] = useState(0); // 서버로 전송할 순수 숫자 값
   const [username, setUsername] = useState("");
 
   const fetchAccount = async () => {
     try {
       const response = await axios.get(`/api/account/${userId}`);
-      if (response.data) {
-        setCash(response.data.cash);
+      if (response.data && response.data.cash !== undefined) {
+        const value = response.data.cash;
+        setRawCash(value);
+        setCashInput(formatNumber(value)); // 불러온 값을 콤마 포맷으로 변환
         setUsername(response.data.username);
       }
     } catch (error) {
@@ -109,13 +112,31 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
     fetchAccount();
   }, [userId]);
 
+  // 숫자에 천단위 콤마(,) 추가하는 함수
+  const formatNumber = (value) => {
+    if (value === "" || value === null || value === undefined) return "";
+    return new Intl.NumberFormat("ko-KR").format(Number(value));
+  };
+
+  // 입력창 변경 핸들러 (콤마 자동 변환)
+  const handleInputChange = (e) => {
+    // 콤마(,)를 모두 제거하고 순수 숫자만 추출
+    const valueWithoutComma = e.target.value.replace(/,/g, "");
+
+    // 숫자가 아니면 빈 값 처리
+    if (valueWithoutComma && isNaN(valueWithoutComma)) return;
+
+    setRawCash(valueWithoutComma === "" ? 0 : Number(valueWithoutComma));
+    setCashInput(formatNumber(valueWithoutComma)); // 콤마 포맷팅 적용하여 상태 저장
+  };
+
   const handleCashUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/account/${userId}/cash`, { cash: Number(cash) });
+      await axios.put(`/api/account/${userId}/cash`, { cash: Number(rawCash) });
       alert("투자 가동 현금 잔고가 성공적으로 변경되었습니다.");
       fetchAccount();
-      if (onCashUpdated) onCashUpdated(); // 잔고 변경 시 부모 컴포넌트나 포트폴리오 리프레시용
+      if (onCashUpdated) onCashUpdated();
     } catch (error) {
       console.error("잔고 변경 실패:", error);
       alert("잔고 변경 중 오류가 발생했습니다.");
@@ -143,7 +164,9 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
           사용자 계정: {username || "기본 사용자"}
         </h4>
         <p style={{ margin: 0, fontSize: "13px", color: "#6b7280" }}>
-          모의 투자에 사용할 초기 현금 자산을 설정하세요.
+          현재 잔고:{" "}
+          <strong style={{ color: "#2f80ed" }}>{cashInput || 0}원</strong> (모의
+          투자 초기 자산을 설정하세요)
         </p>
       </div>
       <form
@@ -151,15 +174,16 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
         style={{ display: "flex", gap: "8px", alignItems: "center" }}
       >
         <input
-          type="number"
-          value={cash}
-          onChange={(e) => setCash(e.target.value)}
-          placeholder="현금 입력"
+          type="text" // 콤마 포맷 표시를 위해 text 타입 사용 (숫자만 입력되도록 처리됨)
+          value={cashInput}
+          onChange={handleInputChange}
+          placeholder="금액 입력"
           style={{
             padding: "8px 12px",
-            width: "160px",
+            width: "180px",
             borderRadius: "4px",
             border: "1px solid #d1d5db",
+            textAlign: "right",
           }}
           required
         />
