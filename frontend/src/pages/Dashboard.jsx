@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import Header from "../components/common/Header";
 import ChartView from "../components/dashboard/ChartView";
@@ -10,9 +11,6 @@ import Portfolio from "../components/dashboard/Portfolio";
 import "../styles/Dashboard.css";
 
 // 주문/차트에서 다룰 종목 목록입니다.
-// 지금은 샘플 데이터이며, 실제로는 API에서 받아온 시세로 교체하면 됩니다.
-// - symbol: 주문 API로 그대로 전송되는 값 (DB orders.symbol 컬럼)
-// - tvSymbol: TradingView 차트 위젯에 넘기는 심볼 형식
 const TRADABLE_INSTRUMENTS = [
   {
     symbol: "360750",
@@ -88,6 +86,103 @@ const TRADABLE_INSTRUMENTS = [
   },
 ];
 
+// =========================================================
+// 사용자 계정 및 잔고 관리 서브 컴포넌트
+// =========================================================
+const AccountManager = ({ userId = 1, onCashUpdated }) => {
+  const [cash, setCash] = useState("");
+  const [username, setUsername] = useState("");
+
+  const fetchAccount = async () => {
+    try {
+      const response = await axios.get(`/api/account/${userId}`);
+      if (response.data) {
+        setCash(response.data.cash);
+        setUsername(response.data.username);
+      }
+    } catch (error) {
+      console.error("계정 정보를 불러오지 못했습니다.", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, [userId]);
+
+  const handleCashUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`/api/account/${userId}/cash`, { cash: Number(cash) });
+      alert("투자 가동 현금 잔고가 성공적으로 변경되었습니다.");
+      fetchAccount();
+      if (onCashUpdated) onCashUpdated(); // 잔고 변경 시 부모 컴포넌트나 포트폴리오 리프레시용
+    } catch (error) {
+      console.error("잔고 변경 실패:", error);
+      alert("잔고 변경 중 오류가 발생했습니다.");
+    }
+  };
+
+  return (
+    <div
+      className="account-manager-card"
+      style={{
+        padding: "16px 20px",
+        background: "#f8f9fa",
+        borderRadius: "8px",
+        marginBottom: "20px",
+        border: "1px solid #e5e7eb",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: "10px",
+      }}
+    >
+      <div>
+        <h4 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>
+          사용자 계정: {username || "기본 사용자"}
+        </h4>
+        <p style={{ margin: 0, fontSize: "13px", color: "#6b7280" }}>
+          모의 투자에 사용할 초기 현금 자산을 설정하세요.
+        </p>
+      </div>
+      <form
+        onSubmit={handleCashUpdate}
+        style={{ display: "flex", gap: "8px", alignItems: "center" }}
+      >
+        <input
+          type="number"
+          value={cash}
+          onChange={(e) => setCash(e.target.value)}
+          placeholder="현금 입력"
+          style={{
+            padding: "8px 12px",
+            width: "160px",
+            borderRadius: "4px",
+            border: "1px solid #d1d5db",
+          }}
+          required
+        />
+        <span style={{ fontSize: "14px", fontWeight: "bold" }}>원</span>
+        <button
+          type="submit"
+          style={{
+            padding: "8px 16px",
+            backgroundColor: "#2f80ed",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "500",
+          }}
+        >
+          잔고 변경
+        </button>
+      </form>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(
     TRADABLE_INSTRUMENTS[0].symbol,
@@ -124,7 +219,7 @@ const Dashboard = () => {
         </section>
 
         {/* =======================================================
-            포트폴리오 요약
+            포트폴리오 요약 및 잔고 관리
            ======================================================= */}
         <section className="dashboard-section portfolio-section">
           <div className="section-header">
@@ -133,6 +228,9 @@ const Dashboard = () => {
               <p>보유 자산과 수익률을 확인하세요.</p>
             </div>
           </div>
+
+          {/* 잔고 입력/관리 위젯 추가 */}
+          <AccountManager userId={1} />
 
           <div className="portfolio-card">
             <Portfolio />

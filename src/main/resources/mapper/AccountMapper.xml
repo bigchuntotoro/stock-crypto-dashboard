@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.dashboard.mapper.AccountMapper">
+
+    <select id="selectAccountByUserId" resultType="com.example.dashboard.dto.AccountDto">
+        SELECT user_id AS userId, username, cash, created_at AS createdAt
+        FROM accounts
+        WHERE user_id = #{userId}
+    </select>
+
+    <update id="updateCash">
+        UPDATE accounts
+        SET cash = #{cash}
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>
