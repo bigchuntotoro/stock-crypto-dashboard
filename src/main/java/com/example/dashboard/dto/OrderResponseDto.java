@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Setter
 public class OrderResponseDto {
     private Long id;
+    private Long userId;       // 포트폴리오 원복을 위해 userId 추가
     private String date;       // created_at (매핑)
     private String type;       // BUY / SELL
     private String market;     // ETF / CRYPTO 등

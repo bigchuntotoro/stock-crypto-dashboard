@@ -26,6 +26,24 @@
         ORDER BY created_at DESC
     </select>
 
+    <!-- 특정 주문 단건 조회 -->
+    <select id="selectOrderById" resultType="com.example.dashboard.dto.OrderResponseDto">
+        SELECT
+        order_id AS id,
+        user_id AS userId,
+        created_at AS date,
+        type,
+        market,
+        name,
+        symbol,
+        quantity,
+        price,
+        (quantity * price) AS amount,
+        status
+        FROM orders
+        WHERE order_id = #{id}
+    </select>
+
     <!-- 주문 내역 삭제 SQL 추가 -->
     <delete id="deleteOrder">
         DELETE FROM orders WHERE order_id = #{id}
