@@ -212,11 +212,16 @@ const Dashboard = () => {
     TRADABLE_INSTRUMENTS[0].symbol,
   );
 
-  // 포트폴리오 새로고침을 위한 트리거 state 추가
+  // 포트폴리오 및 잔고 새로고침을 위한 트리거 state
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleOrderComplete = () => {
     // 주문 성공 시 key 값을 변경하여 <Portfolio /> 컴포넌트가 재렌더링 및 API 재호출을 하도록 유도
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  const handleCashUpdated = () => {
+    // 잔고 변경 시에도 포트폴리오(총 자산 등)를 새로고침하도록 유도
     setRefreshKey((prev) => prev + 1);
   };
 
@@ -261,8 +266,11 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* 자산(잔고) 입력 및 관리 컴포넌트 추가 */}
+          <AccountManager userId={1} onCashUpdated={handleCashUpdated} />
+
           <div className="portfolio-card">
-            {/* refreshKey를 props로 전달 */}
+            {/* refreshKey를 props로 전달하여 매수/잔고 변경 시 즉시 갱신 */}
             <Portfolio key={refreshKey} />
           </div>
         </section>
