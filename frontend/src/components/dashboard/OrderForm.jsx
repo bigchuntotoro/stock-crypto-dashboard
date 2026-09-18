@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 
-export default function OrderForm({ symbol, currentPrice, name, stockName }) {
+export default function OrderForm({
+  symbol,
+  currentPrice,
+  name,
+  stockName,
+  onOrderComplete,
+}) {
   const [quantity, setQuantity] = useState("");
   const [orderType, setOrderType] = useState("BUY");
   const [price, setPrice] = useState(currentPrice ?? "");
@@ -41,6 +47,11 @@ export default function OrderForm({ symbol, currentPrice, name, stockName }) {
       await axiosInstance.post("/orders", payload);
       alert(`${orderType === "BUY" ? "매수" : "매도"} 주문이 체결되었습니다!`);
       setQuantity("");
+
+      // 주문 완료 후 부모 컴포넌트(Dashboard 등)에 알림 (포트폴리오 즉시 갱신용)
+      if (typeof onOrderComplete === "function") {
+        onOrderComplete();
+      }
     } catch (error) {
       console.error("Order failed:", error);
       alert("주문에 실패했습니다.");

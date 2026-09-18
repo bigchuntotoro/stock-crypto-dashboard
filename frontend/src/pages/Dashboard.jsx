@@ -212,6 +212,14 @@ const Dashboard = () => {
     TRADABLE_INSTRUMENTS[0].symbol,
   );
 
+  // 포트폴리오 새로고침을 위한 트리거 state 추가
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleOrderComplete = () => {
+    // 주문 성공 시 key 값을 변경하여 <Portfolio /> 컴포넌트가 재렌더링 및 API 재호출을 하도록 유도
+    setRefreshKey((prev) => prev + 1);
+  };
+
   const selectedInstrument =
     TRADABLE_INSTRUMENTS.find((item) => item.symbol === selectedSymbol) ||
     TRADABLE_INSTRUMENTS[0];
@@ -253,11 +261,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* 잔고 입력/관리 위젯 추가 */}
-          <AccountManager userId={1} />
-
           <div className="portfolio-card">
-            <Portfolio />
+            {/* refreshKey를 props로 전달 */}
+            <Portfolio key={refreshKey} />
           </div>
         </section>
 
@@ -305,6 +311,7 @@ const Dashboard = () => {
               symbol={selectedInstrument.symbol}
               currentPrice={selectedInstrument.price}
               name={selectedInstrument.name}
+              onOrderComplete={handleOrderComplete} {/* 주문 완료 콜백 전달 */}
             />
           </div>
         </section>
