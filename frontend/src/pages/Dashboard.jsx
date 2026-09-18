@@ -311,7 +311,7 @@ const Dashboard = () => {
               symbol={selectedInstrument.symbol}
               currentPrice={selectedInstrument.price}
               name={selectedInstrument.name}
-              onOrderComplete={handleOrderComplete} {/* 주문 완료 콜백 전달 */}
+              onOrderComplete={handleOrderComplete}
             />
           </div>
         </section>
