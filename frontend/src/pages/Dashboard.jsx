@@ -6,11 +6,8 @@ import ChartView from "../components/dashboard/ChartView";
 import OrderForm from "../components/dashboard/OrderForm";
 import Portfolio from "../components/dashboard/Portfolio";
 
-// 새로 작성한 스타일시트. 파일을 Dashboard.jsx와 같은 폴더에 두거나,
-// 경로가 다르다면 이 import 경로만 프로젝트 구조에 맞게 수정하세요.
 import "../styles/Dashboard.css";
 
-// 주문/차트에서 다룰 종목 목록입니다.
 const TRADABLE_INSTRUMENTS = [
   {
     symbol: "360750",
@@ -87,11 +84,11 @@ const TRADABLE_INSTRUMENTS = [
 ];
 
 // =========================================================
-// 사용자 계정 및 잔고 관리 서브 컴포넌트 (자릿수 콤마 적용)
+// 사용자 계정 및 잔고 관리 서브 컴포넌트
 // =========================================================
-const AccountManager = ({ userId = 1, onCashUpdated }) => {
-  const [cashInput, setCashInput] = useState(""); // 화면에 콤마가 포함되어 표시될 문자열 값
-  const [rawCash, setRawCash] = useState(0); // 서버로 전송할 순수 숫자 값
+const AccountManager = ({ userId = 1, onCashUpdated, refreshKey }) => {
+  const [cashInput, setCashInput] = useState("");
+  const [rawCash, setRawCash] = useState(0);
   const [username, setUsername] = useState("");
 
   const fetchAccount = async () => {
@@ -100,7 +97,7 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
       if (response.data && response.data.cash !== undefined) {
         const value = response.data.cash;
         setRawCash(value);
-        setCashInput(formatNumber(value)); // 불러온 값을 콤마 포맷으로 변환
+        setCashInput(formatNumber(value));
         setUsername(response.data.username);
       }
     } catch (error) {
@@ -108,26 +105,22 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
     }
   };
 
+  // refreshKey가 바뀔 때마다(주문 체결 등) 계정 잔고 정보를 다시 불러옴
   useEffect(() => {
     fetchAccount();
-  }, [userId]);
+  }, [userId, refreshKey]);
 
-  // 숫자에 천단위 콤마(,) 추가하는 함수
   const formatNumber = (value) => {
     if (value === "" || value === null || value === undefined) return "";
     return new Intl.NumberFormat("ko-KR").format(Number(value));
   };
 
-  // 입력창 변경 핸들러 (콤마 자동 변환)
   const handleInputChange = (e) => {
-    // 콤마(,)를 모두 제거하고 순수 숫자만 추출
     const valueWithoutComma = e.target.value.replace(/,/g, "");
-
-    // 숫자가 아니면 빈 값 처리
     if (valueWithoutComma && isNaN(valueWithoutComma)) return;
 
     setRawCash(valueWithoutComma === "" ? 0 : Number(valueWithoutComma));
-    setCashInput(formatNumber(valueWithoutComma)); // 콤마 포맷팅 적용하여 상태 저장
+    setCashInput(formatNumber(valueWithoutComma));
   };
 
   const handleCashUpdate = async (e) => {
@@ -174,7 +167,7 @@ const AccountManager = ({ userId = 1, onCashUpdated }) => {
         style={{ display: "flex", gap: "8px", alignItems: "center" }}
       >
         <input
-          type="text" // 콤마 포맷 표시를 위해 text 타입 사용 (숫자만 입력되도록 처리됨)
+          type="text"
           value={cashInput}
           onChange={handleInputChange}
           placeholder="금액 입력"
@@ -212,16 +205,14 @@ const Dashboard = () => {
     TRADABLE_INSTRUMENTS[0].symbol,
   );
 
-  // 포트폴리오 및 잔고 새로고침을 위한 트리거 state
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleOrderComplete = () => {
-    // 주문 성공 시 key 값을 변경하여 <Portfolio /> 컴포넌트가 재렌더링 및 API 재호출을 하도록 유도
+    // 주문이 성공하면 refreshKey를 증가시켜 포트폴리오와 잔고 내역을 동시에 다시 불러옵니다.
     setRefreshKey((prev) => prev + 1);
   };
 
   const handleCashUpdated = () => {
-    // 잔고 변경 시에도 포트폴리오(총 자산 등)를 새로고침하도록 유도
     setRefreshKey((prev) => prev + 1);
   };
 
@@ -231,19 +222,11 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page">
-      {/* =========================================================
-          상단 헤더
-         ========================================================= */}
       <Header />
-      {/* =========================================================
-          메인 컨텐츠
-         ========================================================= */}
       <main className="dashboard-container">
-        {/* 페이지 타이틀 */}
         <section className="dashboard-title-section">
           <div>
             <h1 className="dashboard-title">Stock & Crypto Dashboard</h1>
-
             <p className="dashboard-subtitle">
               실시간 시세와 포트폴리오를 한눈에 확인하세요.
             </p>
@@ -255,9 +238,6 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* =======================================================
-            포트폴리오 요약 및 잔고 관리
-           ======================================================= */}
         <section className="dashboard-section portfolio-section">
           <div className="section-header">
             <div>
@@ -266,18 +246,18 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* 자산(잔고) 입력 및 관리 컴포넌트 추가 */}
-          <AccountManager userId={1} onCashUpdated={handleCashUpdated} />
+          {/* AccountManager에 refreshKey 전달하여 매수 시 잔고도 자동 갱신 */}
+          <AccountManager
+            userId={1}
+            onCashUpdated={handleCashUpdated}
+            refreshKey={refreshKey}
+          />
 
           <div className="portfolio-card">
-            {/* refreshKey를 props로 전달하여 매수/잔고 변경 시 즉시 갱신 */}
             <Portfolio key={refreshKey} />
           </div>
         </section>
 
-        {/* =======================================================
-            차트
-           ======================================================= */}
         <section className="dashboard-section chart-section">
           <div className="section-header">
             <div>
@@ -303,9 +283,6 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* =======================================================
-            주문
-           ======================================================= */}
         <section className="dashboard-section order-section">
           <div className="section-header">
             <div>
@@ -325,9 +302,6 @@ const Dashboard = () => {
         </section>
       </main>
 
-      {/* =========================================================
-          Footer
-         ========================================================= */}
       <footer className="dashboard-footer">
         <div className="dashboard-footer-inner">
           <span>Stock & Crypto Dashboard</span>
