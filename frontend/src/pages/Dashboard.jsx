@@ -16,16 +16,34 @@ const TRADABLE_INSTRUMENTS = [
     price: 19250,
   },
   {
-    symbol: "133690",
-    tvSymbol: "NASDAQ:QQQ",
-    name: "TIGER 미국나스닥100",
-    price: 22800,
+    symbol: "379810",
+    tvSymbol: "KRX:379810",
+    name: "KODEX 미국나스닥100",
+    price: 26000,
   },
   {
     symbol: "379800",
     tvSymbol: "AMEX:SCHD",
     name: "KODEX 미국배당다우존스",
     price: 12450,
+  },
+  {
+    symbol: "0153K0",
+    tvSymbol: "KRX:0153K0",
+    name: "KODEX 주주환원고배당주",
+    price: 12300,
+  },
+  {
+    symbol: "498400",
+    tvSymbol: "KRX:498400",
+    name: "KODEX 200타겟위클리커버드콜",
+    price: 19800,
+  },
+  {
+    symbol: "214980",
+    tvSymbol: "KRX:214980",
+    name: "KODEX 단기채권PLUS",
+    price: 114400,
   },
   {
     symbol: "452380",
